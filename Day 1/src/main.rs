@@ -49,8 +49,11 @@ fn main() {
     let file = File::open("input.txt").unwrap();
     let reader = BufReader::new(file);
 
-    // let part_one = solve_part_one(reader);
-    // println!("Part one: {}", part_one);
+    let part_one = solve_part_one(reader);
+    println!("Part one: {}", part_one);
+
+    let file = File::open("input.txt").unwrap();
+    let reader = BufReader::new(file);
 
     let part_two = solve_part_two(reader);
     println!("Part two: {}", part_two);
