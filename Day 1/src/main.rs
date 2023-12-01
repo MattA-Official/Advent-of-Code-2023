@@ -116,8 +116,6 @@ fn words_to_numbers_forward(line: &str) -> String {
         i += 1;
     }
 
-    println!("{} -> {}", line, result);
-
     result
 }
 
@@ -146,8 +144,6 @@ fn words_to_numbers_reverse(line: &str) -> String {
         }
         i -= 1;
     }
-
-    println!("{} -> {}", line, result);
 
     result
 }
