@@ -20,6 +20,25 @@ a1b2c3d4e5f
 treb7uchet
 
 In this example, the calibration values of these four lines are 12, 38, 15, and 77. Adding these together produces 142.
+
+Consider your entire calibration document. What is the sum of all of the calibration values?
+
+--- Part Two ---
+Your calculation isn't quite right. It looks like some of the digits are actually spelled out with letters: one, two, three, four, five, six, seven, eight, and nine also count as valid "digits".
+
+Equipped with this new information, you now need to find the real first and last digit on each line. For example:
+
+two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen
+
+In this example, the calibration values are 29, 83, 13, 24, 42, 14, and 76. Adding these together produces 281.
+
+What is the sum of all of the calibration values?
 */
 
 use std::fs::File;
@@ -29,9 +48,12 @@ use std::io::BufReader;
 fn main() {
     let file = File::open("input.txt").unwrap();
     let reader = BufReader::new(file);
-    let part_one = solve_part_one(reader);
 
-    println!("Part one: {}", part_one);
+    // let part_one = solve_part_one(reader);
+    // println!("Part one: {}", part_one);
+
+    let part_two = solve_part_two(reader);
+    println!("Part two: {}", part_two);
 }
 
 fn solve_part_one(reader: BufReader<File>) -> i32 {
@@ -47,6 +69,84 @@ fn solve_part_one(reader: BufReader<File>) -> i32 {
     }
 
     return total;
+}
+
+fn solve_part_two(reader: BufReader<File>) -> i32 {
+    let mut total = 0;
+
+    for line in reader.lines() {
+        let line = line.unwrap();
+
+        let first_digit = get_first_digit(&words_to_numbers_forward(&line));
+        let last_digit = get_last_digit(&words_to_numbers_reverse(&line));
+        total += (first_digit.to_string() + &last_digit.to_string())
+            .parse::<i32>()
+            .unwrap();
+    }
+
+    return total;
+}
+
+fn words_to_numbers_forward(line: &str) -> String {
+    let number_dict = [
+        ("one", "1"),
+        ("two", "2"),
+        ("three", "3"),
+        ("four", "4"),
+        ("five", "5"),
+        ("six", "6"),
+        ("seven", "7"),
+        ("eight", "8"),
+        ("nine", "9"),
+    ];
+
+    let mut result = line.to_string();
+    let mut i = 0;
+    while i < result.len() {
+        for (word, number) in &number_dict {
+            if result[i..].starts_with(word) {
+                result = result.replacen(word, number, 1);
+                i += number.len() - 1;
+                break;
+            }
+        }
+        i += 1;
+    }
+
+    println!("{} -> {}", line, result);
+
+    result
+}
+
+fn words_to_numbers_reverse(line: &str) -> String {
+    let number_dict = [
+        ("one", "1"),
+        ("two", "2"),
+        ("three", "3"),
+        ("four", "4"),
+        ("five", "5"),
+        ("six", "6"),
+        ("seven", "7"),
+        ("eight", "8"),
+        ("nine", "9"),
+    ];
+
+    let mut result = line.to_string();
+    let mut i: usize = result.len() - 1;
+    while i > 0 {
+        for (word, number) in &number_dict {
+            if result[(i - 1)..].starts_with(word) {
+                result = result.replacen(word, number, 1);
+                i -= number.len() - 1;
+                break;
+            }
+        }
+        i -= 1;
+    }
+
+    println!("{} -> {}", line, result);
+
+    result
 }
 
 fn get_first_digit(line: &str) -> char {
